@@ -3,7 +3,7 @@ kind: Rollout
 metadata:
   name: guestbook-ui
 spec:
-  replicas: 3
+  replicas: 2
   revisionHistoryLimit: 10
   selector:
     matchLabels:
@@ -17,7 +17,7 @@ spec:
       - image: gcr.io/heptio-images/ks-guestbook-demo:0.2
         name: guestbook-ui
         args:
-        - "-text=version 1-0-1"
+        - "-text=version 1-0-2"
         ports:
         - containerPort: 80
   strategy:
