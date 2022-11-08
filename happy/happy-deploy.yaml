@@ -1,5 +1,5 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
 metadata:
   name: guestbook-ui
 spec:
@@ -18,3 +18,38 @@ spec:
         name: guestbook-ui
         ports:
         - containerPort: 80
+  strategy:
+    blueGreen: 
+      # activeService specifies the service to update with the new template hash at time of promotion.
+      # This field is mandatory for the blueGreen update strategy.
+      activeService: rollout-bluegreen-guestbook-ui-active
+      # previewService specifies the service to update with the new template hash before promotion.
+      # This allows the preview stack to be reachable without serving production traffic.
+      # This field is optional.
+      previewService: rollout-bluegreen-guestbook-ui-preview
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: rollout-bluegreen-guestbook-ui-active
+spec:
+  selector:
+    app: guestbook-ui
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: rollout-bluegreen-guestbook-ui-preview
+spec:
+  selector:
+    app: guestbook-ui
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
