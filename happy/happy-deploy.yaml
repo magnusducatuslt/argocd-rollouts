@@ -1,9 +1,9 @@
-apiVersion: argoproj.io/v1alpha1
-kind: Rollout
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: guestbook-ui
 spec:
-  replicas: 2
+  replicas: 1
   revisionHistoryLimit: 3
   selector:
     matchLabels:
@@ -18,9 +18,3 @@ spec:
         name: guestbook-ui
         ports:
         - containerPort: 80
-  minReadySeconds: 30
-  strategy:
-# --- Everything above this comment are the same as a deployment ---
-    blueGreen: # A new field for the Blue Green strategy options
-      previewService: guestbook-ui-preview # Reference to a service
-      activeService: guestbook-ui-active # Reference to a service
